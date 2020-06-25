@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Post;
 
 class PostController extends Controller
 {
@@ -16,7 +17,7 @@ class PostController extends Controller
     {
         $posts = Post::orderBy('created_at', 'desc')->paginate(5);
 
-        return view
+        return view('admin.posts.index', compact('posts'));
     }
 
     /**
