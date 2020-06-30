@@ -48,7 +48,7 @@ class PostController extends Controller
         $data['user_id'] = Auth::id();
         $data['slug'] = Str::slug($data['title'], '-');
 
-        // Image storing
+        // Image store
         if (!empty($data['img_path'])) {
             $data['img_path'] = Storage::disk('public')->put('img', $data['img_path']);
         }
@@ -97,6 +97,18 @@ class PostController extends Controller
         
         $data = $request->all();
         $data['slug'] = Str::slug($data['title'], '-');
+
+        if (!empty($data['img_path'])) {
+            
+            // Delete old image
+            if (!empty($post->img_path)) {
+                Storage::disk('public')->delete($post->img_path);
+            }
+
+            // Store new image
+            $data['img_path'] = Storage::disk('public')->put('img', $data['img_path']);
+        }
+
         $updated = $post->update($data);
 
         if ($updated) {
@@ -117,6 +129,12 @@ class PostController extends Controller
         }
 
         $title = $post->title;
+
+        // Delete stored image
+        if (!empty($post->img_path)) {
+            Storage::disk('public')->delete($post->img_path);
+        }
+
         $deleted = $post->delete();
 
         if ($deleted) {
