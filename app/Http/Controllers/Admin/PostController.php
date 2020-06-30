@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Validation\Rule;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Post;
 
 class PostController extends Controller
@@ -46,6 +47,11 @@ class PostController extends Controller
         $data = $request->all();
         $data['user_id'] = Auth::id();
         $data['slug'] = Str::slug($data['title'], '-');
+
+        // Image storing
+        if (!empty($data['img_path'])) {
+            $data['img_path'] = Storage::disk('public')->put('img', $data['img_path']);
+        }
 
         $newPost = new Post();
         $newPost->fill($data);
@@ -129,6 +135,7 @@ class PostController extends Controller
                 Rule::unique('posts')->ignore($id)
             ],
             'body' => 'required',
+            'img_path' => 'image'
         ];
     }
 }
