@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use App\Mail\NewPost;
 use App\Post;
 
 class PostController extends Controller
@@ -58,6 +60,9 @@ class PostController extends Controller
         $saved = $newPost->save();
 
         if ($saved) {
+            //Send success notification via mail
+            Mail::to('sempronio@caio.it')->send(new NewPost($newPost));
+
             return redirect()->route('admin.posts.show', $newPost->id);
         }
     }
