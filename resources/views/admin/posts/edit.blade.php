@@ -31,7 +31,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="img">Upload a picture</label>
+                    <label for="img">Upload a new picture</label>
+                    @isset($post->img_path)
+                        <div class="mb-3">
+                            <img src="{{ asset('storage/' . $post->img_path) }}" alt="" width="150">
+                        </div>
+                    @endisset
                     <input class="form-control" type="file" id="img" name="img_path" accept="image/*">
                 </div>
 
